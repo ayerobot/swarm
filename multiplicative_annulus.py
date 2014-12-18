@@ -36,14 +36,14 @@ def generate_people(num, xpos, ypos, xmax, ymax):
 	people[:,2] = np.array([dist(people[i,0], people[i,1], xpos, ypos) + np.random.normal(0, sigma) for i in range(num)])
 	return people
 
-def iterate(array, xpos, ypos):
-	people = generate_people(100, xpos, ypos, array.shape[1], array.shape[0])
+def iterate(array, xpos, ypos, num):
+	people = generate_people(num, xpos, ypos, array.shape[1], array.shape[0])
 	i = 0
 	while (i < 30 or check(array) > 200):
 		print check(array)
 		array = make_annulus(array, people[i][0], people[i][1], people[i][2])
 		i += 1
-		if (i >= 100):
+		if (i >= num):
 			break
 	print check(array)
 	print "num iterations =", i
