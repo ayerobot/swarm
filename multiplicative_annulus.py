@@ -65,8 +65,9 @@ def iterate_until(shape, xtarg, ytarg, low_err, high_err, limit):
 		#generates random location + distance
 		x = rand.randint(0, shape[0])
 		y = rand.randint(0, shape[1])
-		dist = euclid(np.array([x, y]), np.array([xtarg, ytarg]))
-		sigma = rand.randint(low_err, high_err)
+		dist = euclid(np.array([x, y]), np.array([xtarg, ytarg])) # calculates relative distance
+		sigma = rand.randint(low_err, high_err) # creates random noise
+		dist += np.random.normal(0, sigma)
 		new_annulus  = generate_probability_annulus(shape, x, y, dist, sigma)
 		i += 1
 		total += new_annulus
