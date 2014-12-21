@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F87842C2-46C3-44E7-AF05-0E23B0F4C48C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BTLoc</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>F17ACBAAD664D5338AC660F1F31746B0D5D78430</key>
+		<string>https://github.com/ayerobot/swarm.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BTLoc/BTLoc.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>F17ACBAAD664D5338AC660F1F31746B0D5D78430</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ayerobot/swarm.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>F17ACBAAD664D5338AC660F1F31746B0D5D78430</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>F17ACBAAD664D5338AC660F1F31746B0D5D78430</string>
+			<key>IDESourceControlWCCName</key>
+			<string>swarm</string>
+		</dict>
+	</array>
+</dict>
+</plist>

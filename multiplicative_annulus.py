@@ -142,9 +142,9 @@ def graph_results(ref_num, arr):
 	plt.show()
 
 if __name__ == "__main__":
-	num = 30
+	num = 4
 	arr = test2(num)
-	graph_results(30, arr)
+	graph_results(num, arr)
 
 
 
