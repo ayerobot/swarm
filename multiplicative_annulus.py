@@ -17,7 +17,7 @@ probs = [0.383, 0.2996, 0.1838, 0.088, 0.0456]
 #np.random.normal(mu, sigma, shape)
 
 check = lambda array: len(np.where(array == array.max())[0]) # returns number of locations where array == array.max()
-dist = lambda x1, y1, x2, y2: np.sqrt((x1 - x2)**2 + (y1 - y2)**2) # returns distance between two points
+dist_func = lambda x1, y1, x2, y2: np.sqrt((x1 - x2)**2 + (y1 - y2)**2) # returns distance between two points
 
 def make_annulus(array, x, y, radius):
 	yind, xind = np.indices(array.shape)
@@ -49,7 +49,7 @@ def euclid(arr1, arr2):
 	else:
 		raise TypeError("shapes do not match")
 
-
+# To get prob w/ 0 reference points, use measured_dist = 0
 def generate_probability_annulus(shape, x, y, measured_dist, sigma):
 	yind, xind = np.indices(shape)
 	dist = np.sqrt((xind - x)**2 + (yind - y)**2)
@@ -67,17 +67,33 @@ def iterate_until(shape, xtarg, ytarg, low_err, high_err, limit):
 		y = rand.randint(0, shape[1])
 		dist = euclid(np.array([x, y]), np.array([xtarg, ytarg])) # calculates relative distance
 		sigma = rand.randint(low_err, high_err) # creates random noise
-		dist += np.random.normal(0, sigma)
+		#dist += rand.normal(0, sigma)
+		x, y = add_error(x, y, sigma)
 		new_annulus  = generate_probability_annulus(shape, x, y, dist, sigma)
 		i += 1
 		total += new_annulus
 	return total/limit
 
+def iter_array(total, xtarg, ytarg, low_err, high_err, limit):
+	shape = total.shape
+	# factor in original location error + probability
+	for i in range(limit):
+		#generates random location + distance
+		x = rand.randint(0, shape[0])
+		y = rand.randint(0, shape[1])
+		dist = euclid(np.array([x, y]), np.array([xtarg, ytarg])) # calculates relative distance
+		sigma = rand.randint(low_err, high_err) # creates random noise
+		#dist += rand.normal(0, sigma)
+		x, y = add_error(x, y, sigma)
+		new_annulus  = generate_probability_annulus(shape, x, y, dist, sigma)
+		total += new_annulus
+	return total/(limit + 1)
+
 def generate_people(num, xpos, ypos, xmax, ymax):
 	people = np.zeros((num, 3))
-	people[:,0] = np.random.randint(0, xmax, (1, num))
-	people[:,1] = np.random.randint(0, ymax, (1, num))
-	people[:,2] = np.array([dist(people[i,0], people[i,1], xpos, ypos) + np.random.normal(0, sigma) for i in range(num)])
+	people[:,0] = rand.randint(0, xmax, (1, num))
+	people[:,1] = rand.randint(0, ymax, (1, num))
+	people[:,2] = np.array([dist_func(people[i,0], people[i,1], xpos, ypos) + rand.normal(0, sigma) for i in range(num)])
 	return people
 
 def iterate(array, xpos, ypos, num):
@@ -95,7 +111,42 @@ def iterate(array, xpos, ypos, num):
 	print "num iterations =", i
 	return array
 
-#test function, needs to be expanded
+def add_error(xpos, ypos, sigma):
+	error_magnitude = rand.normal(0, sigma)
+	angle = rand.rand() * np.pi
+	x_err = np.cos(angle) * error_magnitude
+	y_err = np.sin(angle) * error_magnitude
+	return xpos + x_err, ypos + y_err
+
+
+"""
+This test is used to identify improvements in distance error from the built in model. 
+Each test returns the distance between the new point of max probatility and the actual location. 
+Running 10 trials with num = 20 finds that the mean error between actual center and calculated center is 3.64, with standard error 0.379.
+"""
+def test3(num):
+	targx, targy = (1000, 1000)
+	#sigma = rand.randint(10, 30)
+	# for test purposes make sigma constant at max_error
+	sigma = 30
+	measuredX, measuredY = add_error(targx, targy, sigma)
+	original = generate_probability_annulus((2000, 2000), measuredX, measuredY, 0, sigma)
+	#result = iter_array(original.copy(), targx, targy, 10, 30, num)
+	result = iterate_until((2000, 2000), targx, targy, 10, 30, num)
+
+	original_center = np.where(original == original.max())
+	new_center = np.where(result == result.max())
+	print "Original center:", original_center
+	print "New center:", new_center
+	if (len(original_center[0]) == 1 and len(new_center[0]) == 1):
+		origy, origx = original_center[0][0], original_center[1][0]
+		newy, newx = new_center[0][0], new_center[1][0]
+		orig_dist = dist_func(origx, origy, targx, targy)
+		new_dist = dist_func(newx, newy, targx, targy)
+		print "Original distance:", orig_dist
+		print "New distance:", new_dist
+	return new_dist
+
 def test2(num):
 	shape = (2000, 2000)
 	targx = 1000
@@ -140,6 +191,24 @@ def graph_results(ref_num, arr):
 	plt.title('location probability with ' + str(ref_num) + ' reference points')
 	plt.colorbar()
 	plt.show()
+
+def graph_double(ref_num, original, new):
+	plt.subplot(121)
+	plt.pcolormesh(original)
+	plt.xlabel("x coordinate")
+	plt.ylabel("y coordinate")
+	plt.title('location probability with 0 reference points')
+	plt.colorbar()
+
+	plt.subplot(122)
+	plt.pcolormesh(new)
+	plt.xlabel("x coordinate")
+	plt.ylabel("y coordinate")
+	plt.title('location probability with ' + str(ref_num) + ' reference points')
+	plt.colorbar()
+
+	plt.show()
+
 
 if __name__ == "__main__":
 	num = 4
